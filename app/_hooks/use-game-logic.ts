@@ -15,12 +15,34 @@ export default function useGameLogic() {
   const [mistakesRemaining, setMistakesRemaning] = useState(4);
   const guessHistoryRef = useRef<Word[][]>([]);
 
+  //Old code; kept for archival purpose.
+  // useEffect(() => {
+  //   const words: Word[] = categories
+  //     .map((category) =>
+  //       category.items.map((word) => ({ word: word, level: category.level }))
+  //     )
+  //     .flat();
+  //   setGameWords(shuffleArray(words));
+  // }, []);
+
+  //NEW!
   useEffect(() => {
-    const words: Word[] = categories
+    // Step 1: Shuffle the categories
+    const shuffledCategories = shuffleArray(categories);
+
+    // Step 2: Select the first 4 categories
+    const selectedCategories = shuffledCategories.slice(0, 4);
+
+    // Step 3: From each selected category, shuffle the words and select 4
+    const words: Word[] = selectedCategories
       .map((category) =>
-        category.items.map((word) => ({ word: word, level: category.level }))
+        shuffleArray(category.items)
+          .slice(0, 4)
+          .map((word) => ({ word: word, level: category.level }))
       )
       .flat();
+
+    // Step 4: Set the shuffled words as the game words
     setGameWords(shuffleArray(words));
   }, []);
 
@@ -124,11 +146,69 @@ export default function useGameLogic() {
 
     await delay(1000);
     setIsLost(true);
+    //NEW!
+    await delay(2000); // Add some delay before resetting the game
+    resetGame(); // Reset the game
   };
 
   const handleWin = async () => {
     await delay(1000);
     setIsWon(true);
+    //NEW!
+    await delay(2000); // Add some delay before resetting the game
+    resetGame(); // Reset the game
+  };
+
+  //NEW!
+  //Resets the game and everything within it to 0, allowing one to play indefinitely.
+  // const resetGame = () => {
+  //   setGameWords(
+  //     shuffleArray(
+  //       categories
+  //         .map((category) =>
+  //           category.items.map((word) => ({
+  //             word: word,
+  //             level: category.level,
+  //           }))
+  //         )
+  //         .flat()
+  //     )
+  //   );
+  //   setClearedCategories([]);
+  //   setIsWon(false);
+  //   setIsLost(false);
+  //   setMistakesRemaning(4);
+  //   guessHistoryRef.current = [];
+  // };
+
+  const resetGame = () => {
+    // Step 1: Shuffle the categories
+    const shuffledCategories = shuffleArray(categories);
+
+    // Step 2: Select the first 4 categories
+    const selectedCategories = shuffledCategories.slice(0, 4);
+
+    // Step 3: From each selected category, shuffle the words and select 4
+    const words: Word[] = selectedCategories
+      .map((category) =>
+        shuffleArray(category.items)
+          .slice(0, 4)
+          .map((word) => ({
+            word: word,
+            level: category.level,
+          }))
+      )
+      .flat();
+
+    // Step 4: Set the shuffled words as the game words
+    setGameWords(shuffleArray(words));
+
+    // Resetting other game states
+    setClearedCategories([]);
+    setIsWon(false);
+    setIsLost(false);
+    setMistakesRemaning(4);
+    guessHistoryRef.current = [];
   };
 
   return {
@@ -145,5 +225,7 @@ export default function useGameLogic() {
     getSubmitResult,
     handleLoss,
     handleWin,
+    resetGame, //NEW!
   };
 }
+

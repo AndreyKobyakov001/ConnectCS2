@@ -28,6 +28,7 @@ export default function Home() {
     getSubmitResult,
     handleWin,
     handleLoss,
+    resetGame,
   } = useGameLogic();
 
   const [showGameWonModal, setShowGameWonModal] = useState(false);
@@ -152,7 +153,7 @@ export default function Home() {
         </h2>
         {renderControlButtons()}
       </div>
-      <GameWonModal
+      {/* <GameWonModal
         isOpen={showGameWonModal}
         onClose={() => setShowGameWonModal(false)}
         guessHistory={guessHistoryRef.current}
@@ -162,7 +163,28 @@ export default function Home() {
         isOpen={showGameLostModal}
         onClose={() => setShowGameLostModal(false)}
         guessHistory={guessHistoryRef.current}
+      /> */}
+
+      {/* NEW!  */}
+
+      <GameWonModal
+        isOpen={showGameWonModal}
+        onClose={() => {
+          setShowGameWonModal(false);
+          resetGame(); // Reset the game when the modal is closed
+        }}
+        guessHistory={guessHistoryRef.current}
+        perfection={getPerfection(mistakesRemaining)}
+      />
+      <GameLostModal
+        isOpen={showGameLostModal}
+        onClose={() => {
+          setShowGameLostModal(false);
+          resetGame(); // Reset the game when the modal is closed
+        }}
+        guessHistory={guessHistoryRef.current}
       />
     </>
   );
 }
+
