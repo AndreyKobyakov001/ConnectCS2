@@ -153,17 +153,6 @@ export default function Home() {
         </h2>
         {renderControlButtons()}
       </div>
-      {/* <GameWonModal
-        isOpen={showGameWonModal}
-        onClose={() => setShowGameWonModal(false)}
-        guessHistory={guessHistoryRef.current}
-        perfection={getPerfection(mistakesRemaining)}
-      />
-      <GameLostModal
-        isOpen={showGameLostModal}
-        onClose={() => setShowGameLostModal(false)}
-        guessHistory={guessHistoryRef.current}
-      /> */}
 
       {/* NEW!  */}
 
